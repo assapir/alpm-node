@@ -1,0 +1,41 @@
+name: Publish Package to npmjs
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          pacman -Syu --noconfirm
+          pacman -S --noconfirm base-devel pkg-config nodejs npm rustup
+          rustup default stable
+          npm install -g pnpm
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "25.x"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Test
+        run: pnpm test
+
+      - name: Publish
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
