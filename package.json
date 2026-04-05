@@ -1,0 +1,36 @@
+{
+  "name": "alpm",
+  "version": "0.1.0",
+  "type": "module",
+  "license": "GPL-3.0-or-later",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "build": "napi build --platform --release --esm",
+    "build:debug": "napi build --platform --esm",
+    "typecheck": "tsgo",
+    "test": "node --test __test__/*.spec.ts"
+  },
+  "napi": {
+    "binaryName": "alpm",
+    "targets": [
+      "x86_64-unknown-linux-gnu",
+      "x86_64-unknown-linux-musl",
+      "aarch64-unknown-linux-gnu",
+      "aarch64-unknown-linux-musl",
+      "armv7-unknown-linux-gnueabihf",
+      "armv7-unknown-linux-musleabihf",
+      "x86_64-apple-darwin",
+      "aarch64-apple-darwin",
+      "x86_64-pc-windows-msvc",
+      "aarch64-pc-windows-msvc",
+      "x86_64-unknown-freebsd"
+    ]
+  },
+  "devDependencies": {
+    "@napi-rs/cli": "^3.2.0",
+    "@types/node": "^25.5.2",
+    "@typescript/native-preview": "latest"
+  },
+  "packageManager": "pnpm@10.33.0"
+}

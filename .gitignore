@@ -1,0 +1,11 @@
+node_modules/
+target/
+
+# napi-rs build artifacts
+*.node
+index.js
+index.d.ts
+
+# OS
+.DS_Store
+Thumbs.db
