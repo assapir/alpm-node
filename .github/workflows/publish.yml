@@ -2,7 +2,7 @@ name: Publish Package to npmjs
 
 on:
   push:
-    branches: [main]
+    tags: ['v*']
 
 jobs:
   build-x86_64:
@@ -63,6 +63,7 @@ jobs:
           distro: archarm_latest
           githubToken: ${{ github.token }}
           install: |
+            sed -i '/^\[options\]/a DisableSandbox' /etc/pacman.conf
             pacman -Syu --noconfirm
             pacman -S --noconfirm base-devel pkg-config nodejs npm rustup
             rustup default stable
@@ -94,6 +95,18 @@ jobs:
 
       - name: Install dependencies
         run: npm install -g pnpm && pnpm install --no-optional
+
+      - name: Set version from tag
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          echo "Publishing version $VERSION"
+          npm version "$VERSION" --no-git-tag-version --allow-same-version
+          for dir in npm/*/; do
+            (cd "$dir" && npm version "$VERSION" --no-git-tag-version --allow-same-version)
+          done
+          npm pkg set optionalDependencies.libalpm-linux-x64-gnu="$VERSION"
+          npm pkg set optionalDependencies.libalpm-linux-arm64-gnu="$VERSION"
+          npm pkg set optionalDependencies.libalpm-linux-arm-gnueabihf="$VERSION"
 
       - name: Download JS binding
         uses: actions/download-artifact@v4
