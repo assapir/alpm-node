@@ -5,12 +5,9 @@ on:
     branches: [main]
 
 jobs:
-  publish:
+  build-x86_64:
     runs-on: ubuntu-latest
     container: archlinux:latest
-    permissions:
-      contents: read
-      id-token: write
     steps:
       - uses: actions/checkout@v6
 
@@ -21,13 +18,8 @@ jobs:
           rustup default stable
           npm install -g pnpm
 
-      - uses: actions/setup-node@v6
-        with:
-          node-version: "25.x"
-          registry-url: "https://registry.npmjs.org"
-
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --no-optional
 
       - name: Build
         run: pnpm run build
@@ -35,5 +27,109 @@ jobs:
       - name: Test
         run: pnpm test
 
-      - name: Publish
+      - name: Upload native binding
+        uses: actions/upload-artifact@v4
+        with:
+          name: bindings-linux-x64-gnu
+          path: "*.node"
+          if-no-files-found: error
+
+      - name: Upload JS binding
+        uses: actions/upload-artifact@v4
+        with:
+          name: js-binding
+          path: |
+            index.js
+            index.d.ts
+          if-no-files-found: error
+
+  build-arm:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: aarch64
+            artifact_name: bindings-linux-arm64-gnu
+          - arch: armv7
+            artifact_name: bindings-linux-arm-gnueabihf
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Build (${{ matrix.arch }})
+        uses: uraimo/run-on-arch-action@v3
+        with:
+          arch: ${{ matrix.arch }}
+          distro: archarm_latest
+          githubToken: ${{ github.token }}
+          install: |
+            pacman -Syu --noconfirm
+            pacman -S --noconfirm base-devel pkg-config nodejs npm rustup
+            rustup default stable
+            npm install -g pnpm
+          run: |
+            pnpm install --no-optional
+            pnpm run build
+
+      - name: Upload native binding
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: "*.node"
+          if-no-files-found: error
+
+  publish:
+    needs: [build-x86_64, build-arm]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "25.x"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: npm install -g pnpm && pnpm install --no-optional
+
+      - name: Download JS binding
+        uses: actions/download-artifact@v4
+        with:
+          name: js-binding
+          path: .
+
+      - name: Download all native bindings
+        uses: actions/download-artifact@v4
+        with:
+          pattern: bindings-*
+          path: artifacts
+          merge-multiple: true
+
+      - name: Create npm dirs and move artifacts
+        run: |
+          npx napi create-npm-dirs
+          npx napi artifacts --npm-dir npm --build-output-dir artifacts
+
+      - name: List packages
+        run: |
+          echo "=== Main package ==="
+          npm pack --dry-run
+          for dir in npm/*/; do
+            echo "=== $dir ==="
+            (cd "$dir" && npm pack --dry-run)
+          done
+
+      - name: Publish platform packages
+        run: |
+          for dir in npm/*/; do
+            if [ -d "$dir" ] && ls "$dir"*.node 1>/dev/null 2>&1; then
+              echo "Publishing $dir..."
+              (cd "$dir" && npm publish --provenance --access public)
+            fi
+          done
+
+      - name: Publish main package
         run: npm publish --provenance --access public

@@ -1,0 +1,22 @@
+{
+  "name": "libalpm-linux-arm-gnueabihf",
+  "version": "0.2.0",
+  "cpu": [
+    "arm"
+  ],
+  "main": "alpm.linux-arm-gnueabihf.node",
+  "files": [
+    "alpm.linux-arm-gnueabihf.node"
+  ],
+  "license": "GPL-3.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/assapir/alpm-node"
+  },
+  "os": [
+    "linux"
+  ],
+  "libc": [
+    "glibc"
+  ]
+}
