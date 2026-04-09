@@ -19,7 +19,7 @@ jobs:
           npm install -g pnpm
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --no-optional
 
       - name: Build
         run: pnpm run build
@@ -68,7 +68,7 @@ jobs:
             rustup default stable
             npm install -g pnpm
           run: |
-            pnpm install
+            pnpm install --no-optional
             pnpm run build
 
       - name: Upload native binding
@@ -93,7 +93,7 @@ jobs:
           registry-url: "https://registry.npmjs.org"
 
       - name: Install dependencies
-        run: npm install -g pnpm && pnpm install
+        run: npm install -g pnpm && pnpm install --no-optional
 
       - name: Download JS binding
         uses: actions/download-artifact@v4
