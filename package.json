@@ -1,6 +1,6 @@
 {
   "name": "libalpm",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "type": "module",
   "license": "GPL-3.0-or-later",
   "repository": {
@@ -9,9 +9,14 @@
   },
   "main": "index.js",
   "types": "index.d.ts",
+  "files": [
+    "index.js",
+    "index.d.ts"
+  ],
   "scripts": {
     "build": "napi build --platform --release --esm",
     "build:debug": "napi build --platform --esm",
+    "artifacts": "napi artifacts --npm-dir npm",
     "typecheck": "tsgo",
     "test": "node --test __test__/*.spec.ts"
   },
@@ -19,17 +24,14 @@
     "binaryName": "alpm",
     "targets": [
       "x86_64-unknown-linux-gnu",
-      "x86_64-unknown-linux-musl",
       "aarch64-unknown-linux-gnu",
-      "aarch64-unknown-linux-musl",
-      "armv7-unknown-linux-gnueabihf",
-      "armv7-unknown-linux-musleabihf",
-      "x86_64-apple-darwin",
-      "aarch64-apple-darwin",
-      "x86_64-pc-windows-msvc",
-      "aarch64-pc-windows-msvc",
-      "x86_64-unknown-freebsd"
+      "armv7-unknown-linux-gnueabihf"
     ]
+  },
+  "optionalDependencies": {
+    "libalpm-linux-x64-gnu": "0.2.0",
+    "libalpm-linux-arm64-gnu": "0.2.0",
+    "libalpm-linux-arm-gnueabihf": "0.2.0"
   },
   "devDependencies": {
     "@napi-rs/cli": "^3.2.0",

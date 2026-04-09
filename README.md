@@ -10,7 +10,7 @@ Built with [napi-rs](https://napi.rs/) wrapping the Rust [alpm](https://crates.i
 npm install libalpm
 ```
 
-Requires libalpm to be installed on the system (comes with pacman on Arch Linux).
+Requires libalpm to be installed on the system (comes with pacman on Arch Linux). Prebuilt binaries are available for Linux x86_64, aarch64, and armv7 (glibc).
 
 ## Usage
 
