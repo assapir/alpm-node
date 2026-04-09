@@ -1,4 +1,4 @@
-# alpm
+# libalpm
 
 Node.js bindings for [libalpm](https://gitlab.archlinux.org/pacman/pacman) (Arch Linux Package Manager).
 
@@ -7,7 +7,7 @@ Built with [napi-rs](https://napi.rs/) wrapping the Rust [alpm](https://crates.i
 ## Install
 
 ```bash
-npm install alpm
+npm install libalpm
 ```
 
 Requires libalpm to be installed on the system (comes with pacman on Arch Linux).
@@ -15,7 +15,7 @@ Requires libalpm to be installed on the system (comes with pacman on Arch Linux)
 ## Usage
 
 ```typescript
-import { AlpmHandle, alpmVersion, vercmp } from "alpm";
+import { AlpmHandle, alpmVersion, vercmp } from "libalpm";
 
 // Initialize with root and database path
 const handle = new AlpmHandle("/", "/var/lib/pacman/");
