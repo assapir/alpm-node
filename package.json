@@ -3,6 +3,10 @@
   "version": "0.1.2",
   "type": "module",
   "license": "GPL-3.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/assapir/alpm-node"
+  },
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
