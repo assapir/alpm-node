@@ -43,23 +43,18 @@ jobs:
             index.d.ts
           if-no-files-found: error
 
-  build-arm:
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - arch: aarch64
-            artifact_name: bindings-linux-arm64-gnu
+  build-aarch64:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
 
-      - name: Build (${{ matrix.arch }})
+      # No tests — QEMU-emulated environment has no local pacman DB
+      - name: Build (aarch64)
         uses: uraimo/run-on-arch-action@v3
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
         with:
-          arch: ${{ matrix.arch }}
+          arch: aarch64
           distro: archarm_latest
           githubToken: ${{ github.token }}
           install: |
@@ -75,12 +70,12 @@ jobs:
       - name: Upload native binding
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.artifact_name }}
+          name: bindings-linux-arm64-gnu
           path: "*.node"
           if-no-files-found: error
 
   publish:
-    needs: [build-x86_64, build-arm]
+    needs: [build-x86_64, build-aarch64]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -93,9 +88,6 @@ jobs:
           node-version: "25.x"
           registry-url: "https://registry.npmjs.org"
 
-      - name: Install dependencies
-        run: npm install -g pnpm && pnpm install --no-optional
-
       - name: Set version from tag
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
@@ -104,8 +96,9 @@ jobs:
           for dir in npm/*/; do
             (cd "$dir" && npm version "$VERSION" --no-git-tag-version --allow-same-version)
           done
-          npm pkg set optionalDependencies.libalpm-linux-x64-gnu="$VERSION"
-          npm pkg set optionalDependencies.libalpm-linux-arm64-gnu="$VERSION"
+          for dep in $(node -e "Object.keys(require('./package.json').optionalDependencies||{}).forEach(d=>console.log(d))"); do
+            npm pkg set "optionalDependencies.$dep=$VERSION"
+          done
 
       - name: Download JS binding
         uses: actions/download-artifact@v4
@@ -120,10 +113,8 @@ jobs:
           path: artifacts
           merge-multiple: true
 
-      - name: Create npm dirs and move artifacts
-        run: |
-          npx napi create-npm-dirs
-          npx napi artifacts --npm-dir npm --build-output-dir artifacts
+      - name: Move artifacts
+        run: npx -y @napi-rs/cli artifacts --npm-dir npm --build-output-dir artifacts
 
       - name: List packages
         run: |
