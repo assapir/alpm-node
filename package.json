@@ -24,14 +24,12 @@
     "binaryName": "alpm",
     "targets": [
       "x86_64-unknown-linux-gnu",
-      "aarch64-unknown-linux-gnu",
-      "armv7-unknown-linux-gnueabihf"
+      "aarch64-unknown-linux-gnu"
     ]
   },
   "optionalDependencies": {
     "libalpm-linux-x64-gnu": "0.2.0",
-    "libalpm-linux-arm64-gnu": "0.2.0",
-    "libalpm-linux-arm-gnueabihf": "0.2.0"
+    "libalpm-linux-arm64-gnu": "0.2.0"
   },
   "devDependencies": {
     "@napi-rs/cli": "^3.2.0",

@@ -18,9 +18,6 @@ importers:
         specifier: latest
         version: 7.0.0-dev.20260405.1
     optionalDependencies:
-      libalpm-linux-arm-gnueabihf:
-        specifier: 0.2.0
-        version: 0.2.0
       libalpm-linux-arm64-gnu:
         specifier: 0.2.0
         version: 0.2.0
@@ -687,11 +684,6 @@ packages:
   json-with-bigint@3.5.8:
     resolution: {integrity: sha512-eq/4KP6K34kwa7TcFdtvnftvHCD9KvHOGGICWwMFc4dOOKF5t4iYqnfLK8otCRCRv06FXOzGGyqE8h8ElMvvdw==}
 
-  libalpm-linux-arm-gnueabihf@0.2.0:
-    resolution: {integrity: sha512-DFii8FGD4v7iOXecm2ruC5DldOnFk4PaKj1miXA1apoTuHnMtHQ3Gp4xbXDginn9s9zP1Y/6Ynw1J5n/vM794g==}
-    cpu: [arm]
-    os: [linux]
-
   libalpm-linux-arm64-gnu@0.2.0:
     resolution: {integrity: sha512-msVrEYbS/hloxpd2iBWgFD4pTj6GmrSu/MS3Jt1oY8HvDe/UN09Wqb23SUKWPcbjjmxAH9moF5BThYm17XadRw==}
     cpu: [arm64]
@@ -1287,9 +1279,6 @@ snapshots:
       argparse: 2.0.1
 
   json-with-bigint@3.5.8: {}
-
-  libalpm-linux-arm-gnueabihf@0.2.0:
-    optional: true
 
   libalpm-linux-arm64-gnu@0.2.0:
     optional: true

@@ -44,14 +44,14 @@ jobs:
           if-no-files-found: error
 
   build-arm:
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     strategy:
       fail-fast: false
       matrix:
         include:
           - arch: aarch64
             artifact_name: bindings-linux-arm64-gnu
-          - arch: armv7
-            artifact_name: bindings-linux-arm-gnueabihf
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -106,7 +106,6 @@ jobs:
           done
           npm pkg set optionalDependencies.libalpm-linux-x64-gnu="$VERSION"
           npm pkg set optionalDependencies.libalpm-linux-arm64-gnu="$VERSION"
-          npm pkg set optionalDependencies.libalpm-linux-arm-gnueabihf="$VERSION"
 
       - name: Download JS binding
         uses: actions/download-artifact@v4
