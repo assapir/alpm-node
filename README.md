@@ -127,7 +127,7 @@ Create a GitHub Release to publish to npm:
 gh release create v0.4.0 --generate-notes
 ```
 
-This triggers CI which builds for all targets, publishes platform packages and the main package to npm.
+This triggers the publish workflow, which builds for all targets and publishes the platform packages and the main package to npm.
 
 ## License
 
