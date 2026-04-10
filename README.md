@@ -119,6 +119,16 @@ pnpm run build
 pnpm test
 ```
 
+## Releasing
+
+Create a GitHub Release to publish to npm:
+
+```bash
+gh release create v0.4.0 --generate-notes
+```
+
+This triggers CI which builds for all targets, publishes platform packages and the main package to npm.
+
 ## License
 
 GPL-3.0-or-later
